@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profiles</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .class-selector {
+            margin-bottom: 30px;
+        }
+
+        .class-selector label {
+            font-size: 18px;
+            font-weight: 600;
+            color: #007bff;
+        }
+
+        .class-selector select {
+            width: 200px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .student-profiles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .student-card {
+            flex: 1 1 300px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .student-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #007bff;
+            margin-bottom: 15px;
+        }
+
+        .student-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .student-card p {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .student-card button {
+            margin-top: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Class Selector -->
+        <div class="class-selector">
+            <label for="classSelect">Select Class:</label>
+            <select id="classSelect" onchange="loadStudents()">
+                <option value="">Select Class</option>
+                <option value="10A">10A</option>
+                <option value="10B">10B</option>
+                <option value="11A">11A</option>
+                <option value="11B">11B</option>
+            </select>
+        </div>
+
+        <!-- Student Profiles -->
+        <div id="studentProfiles" class="student-profiles">
+            <!-- Student cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+      
+      
+
+        let classes = [];
+        function showSection(section) {
+            document.querySelectorAll('.content > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(section).classList.remove('hidden');
+        }
+    
+        function toggleNested(id) {
+            document.getElementById(id).classList.toggle('active');
+        }
+    
+        function addStudent() {
+            let name = document.getElementById("studentName").value;
+            let rollNo = document.getElementById("rollNo").value;
+            if (name && rollNo) {
+                let table = document.getElementById("studentTable");
+                let newRow = table.insertRow();
+                newRow.innerHTML = `<td>${name}</td><td>${rollNo}</td>
+                            <td>
+                                <button class='btn btn-warning btn-sm' onclick='editStudent(this)'>Edit</button>
+                                <button class='btn btn-danger btn-sm' onclick='deleteStudent(this)'>Delete</button>
+                            </td>`;
+                document.getElementById("studentName").value = "";
+                document.getElementById("rollNo").value = "";
+            }
+        }
+    
+        function editStudent(button) {
+            let row = button.closest("tr");
+            let name = row.cells[0].innerText;
+            let rollNo = row.cells[1].innerText;
+            document.getElementById("studentName").value = name;
+            document.getElementById("rollNo").value = rollNo;
+            row.remove();
+        }
+    
+        function deleteStudent(button) {
+            let row = button.closest("tr");
+            row.remove();
+        }
+    
+        function saveClass() {
+            let fileName = document.getElementById("fileName").value;
+            if (!fileName) {
+                alert("Please enter a file name.");
+                return;
+            }
+    
+            let students = [];
+            let rows = document.querySelectorAll("#studentTable tr");
+            rows.forEach(row => {
+                let name = row.cells[0].innerText;
+                let rollNo = row.cells[1].innerText;
+                students.push({ name, rollNo });
+            });
+    
+            classes.push({ fileName, students });
+            updateClassList();
+    
+            document.getElementById("fileName").value = "";
+            document.getElementById("studentName").value = "";
+            document.getElementById("rollNo").value = "";
+            document.getElementById("studentTable").innerHTML = "";
+    
+            alert("Class saved successfully!");
+        }
+    
+        function updateClassList() {
+            let classList = document.getElementById("classList");
+            classList.innerHTML = '<option value="">Select a class</option>';
+            classes.forEach((cls, index) => {
+                let option = document.createElement("option");
+                option.value = index;
+                option.innerText = cls.fileName;
+                classList.appendChild(option);
+            });
+        }
+    
+        function loadClass() {
+            let classIndex = document.getElementById("classList").value;
+            if (classIndex === "") return;
+    
+            let cls = classes[classIndex];
+            let table = document.getElementById("loadedStudentTable");
+            table.innerHTML = "";
+    
+            cls.students.forEach(student => {
+                let newRow = document.createElement("tr");
+                newRow.innerHTML = `
+            <td>${student.name}</td>
+            <td>${student.rollNo}</td>
+            <td>
+                <button class='btn btn-success btn-sm present-btn'>Present</button>
+                <button class='btn btn-danger btn-sm absent-btn'>Absent</button>
+            </td>`;
+                table.appendChild(newRow);
+            });
+        }
+    
+        document.getElementById("loadedStudentTable").addEventListener("click", function (event) {
+            if (event.target.classList.contains("present-btn")) {
+                markPresent(event.target);
+            } else if (event.target.classList.contains("absent-btn")) {
+                markAbsent(event.target);
+            } else if (event.target.classList.contains("edit-btn")) {
+                resetAttendance(event.target);
+            }
+        });
+    
+        function markPresent(button) {
+            let row = button.closest("tr");
+            row.style.backgroundColor = "#d4edda"; // Light green
+            row.cells[2].innerHTML = `<span class='text-success'>Present</span>
+                               <button class='btn btn-warning btn-sm edit-btn' style='margin-left: 10px;'>Edit</button>`;
+        }
+    
+        function markAbsent(button) {
+            let row = button.closest("tr");
+            row.style.backgroundColor = "#f8d7da"; // Light red
+            row.cells[2].innerHTML = `<span class='text-danger'>Absent</span>
+                               <button class='btn btn-warning btn-sm edit-btn' style='margin-left: 10px;'>Edit</button>`;
+        }
+    
+        function resetAttendance(button) {
+            let row = button.closest("tr");
+            row.style.backgroundColor = ""; // Reset to default
+            row.cells[2].innerHTML = `<button class='btn btn-success btn-sm present-btn'>Present</button>
+                               <button class='btn btn-danger btn-sm absent-btn'>Absent</button>`;
+        }
+    
+        // Save File Function with Date & Time
+        function saveFile() {
+            let classIndex = document.getElementById("classList").value;
+            if (classIndex === "") {
+                alert("Please load a class first.");
+                return;
+            }
+    
+            let cls = classes[classIndex];
+            let attendanceData = [];
+            let now = new Date();
+            let dateTime = now.toLocaleString(); // Get current date and time
+    
+            let rows = document.querySelectorAll("#loadedStudentTable tr");
+            rows.forEach((row) => {
+                let name = row.cells[0].innerText;
+                let rollNo = row.cells[1].innerText;
+                let status = row.cells[2].innerText.includes("Present") ? "Present" : "Absent";
+                attendanceData.push({ name, rollNo, status });
+            });
+    
+            let savedRecords = JSON.parse(localStorage.getItem("savedRecords")) || [];
+            savedRecords.push({ fileName: cls.fileName, dateTime, attendanceData });
+            localStorage.setItem("savedRecords", JSON.stringify(savedRecords));
+    
+            alert("Attendance file saved successfully!");
+        }
+    
+        // Rename Saved Attendance File
+        function renameSavedFile() {
+            let savedRecords = JSON.parse(localStorage.getItem("savedRecords")) || [];
+            if (savedRecords.length === 0) {
+                alert("No saved attendance files found.");
+                return;
+            }
+    
+            let fileNames = savedRecords.map((record, index) => `${index + 1}. ${record.fileName} (${record.dateTime})`).join("\n");
+            let fileIndex = prompt(`Select a file to rename by number:\n${fileNames}`);
+    
+            if (fileIndex && fileIndex > 0 && fileIndex <= savedRecords.length) {
+                let newFileName = prompt("Enter the new file name:");
+                if (newFileName) {
+                    savedRecords[fileIndex - 1].fileName = newFileName;
+                    localStorage.setItem("savedRecords", JSON.stringify(savedRecords));
+                    alert("File renamed successfully!");
+                }
+            } else {
+                alert("Invalid selection.");
+            }
+        }
+        function renameLoadedClass() {
+    let classIndex = document.getElementById("classList").value;
+    if (classIndex === "") {
+        alert("Please select a class to rename.");
+        return;
+    }
+
+    let savedRecords = JSON.parse(localStorage.getItem("savedRecords")) || [];
+    let className = classes[classIndex].fileName; // Get original name
+
+    // Check if this class exists in saved records, if not, add it
+    let recordIndex = savedRecords.findIndex(record => record.fileName === className);
+    if (recordIndex === -1) {
+        alert("This class is not saved yet. Please save attendance first.");
+        return;
+    }
+
+    let newFileName = prompt("Enter the new class name:");
+    if (newFileName) {
+        savedRecords[recordIndex].fileName = newFileName; // Update first time correctly
+        localStorage.setItem("savedRecords", JSON.stringify(savedRecords)); // Save changes
+        updateClassList(); // Refresh dropdown
+
+        // Keep the renamed class selected
+        document.getElementById("classList").value = classIndex;
+
+        alert("Class renamed successfully in saved records!");
+    }
+}
+
+
+// Handle File Upload
+document.getElementById("fileUpload").addEventListener("change", function (event) {
+    let file = event.target.files[0];
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            let data = new Uint8Array(e.target.result);
+            let workbook = XLSX.read(data, { type: "array" });
+
+            // Get the first sheet
+            let sheetName = workbook.SheetNames[0];
+            let sheet = workbook.Sheets[sheetName];
+
+            // Convert sheet data to JSON
+            let jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+            // Clear existing table data
+            document.getElementById("studentTable").innerHTML = "";
+
+            // Populate the table with Excel data
+            jsonData.forEach((row, index) => {
+                if (index > 0) { // Skip header row
+                    let name = row[0]; // First column: Name
+                    let rollNo = row[1]; // Second column: Roll No
+                    addStudentFromExcel(name, rollNo);
+                }
+            });
+        };
+        reader.readAsArrayBuffer(file);
+    }
+});
+
+// Add Student from Excel Data
+function addStudentFromExcel(name, rollNo) {
+    if (name && rollNo) {
+        let table = document.getElementById("studentTable");
+        let newRow = table.insertRow();
+        newRow.innerHTML = `<td>${name}</td><td>${rollNo}</td>
+                            <td>
+                                <button class='btn btn-warning btn-sm' onclick='editStudent(this)'>Edit</button>
+                                <button class='btn btn-danger btn-sm' onclick='deleteStudent(this)'>Delete</button>
+                            </td>`;
+    }
+}
+function addStudent() {
+    let name = document.getElementById("studentName").value;
+    let rollNo = document.getElementById("rollNo").value;
+    if (name && rollNo) {
+        let table = document.getElementById("studentTable").getElementsByTagName("tbody")[0];
+        let newRow = table.insertRow();
+        newRow.innerHTML = `<td>${name}</td><td>${rollNo}</td>
+                    <td>
+                        <button class='btn btn-warning btn-sm' onclick='editStudent(this)'>Edit</button>
+                        <button class='btn btn-danger btn-sm' onclick='deleteStudent(this)'>Delete</button>
+                    </td>`;
+        document.getElementById("studentName").value = "";
+        document.getElementById("rollNo").value = "";
+    }
+}
+
+function editStudent(button) {
+    let row = button.closest("tr");
+    let name = row.cells[0].innerText;
+    let rollNo = row.cells[1].innerText;
+    document.getElementById("studentName").value = name;
+    document.getElementById("rollNo").value = rollNo;
+    row.remove();
+}
+
+function deleteStudent(button) {
+    let row = button.closest("tr");
+    row.remove();
+}
+
+function saveClass() {
+    let fileName = document.getElementById("fileName").value;
+    if (!fileName) {
+        alert("Please enter a file name.");
+        return;
+    }
+
+    let students = [];
+    let rows = document.querySelectorAll("#studentTable tr");
+    rows.forEach(row => {
+        let name = row.cells[0].innerText;
+        let rollNo = row.cells[1].innerText;
+        students.push({ name, rollNo, attendance: [] }); // Add attendance array
+    });
+
+    classes.push({ fileName, students });
+    updateClassList();
+
+    // Automatically load the saved class
+    document.getElementById("classList").value = classes.length - 1;
+    loadClass();
+
+    document.getElementById("fileName").value = "";
+    document.getElementById("studentName").value = "";
+    document.getElementById("rollNo").value = "";
+    document.getElementById("studentTable").getElementsByTagName("tbody")[0].innerHTML = "";
+
+    alert("Class saved and loaded successfully!");
+}
+
+function updateClassList() {
+    let classList = document.getElementById("classList");
+    classList.innerHTML = '<option value="">Select a class</option>';
+    classes.forEach((cls, index) => {
+        let option = document.createElement("option");
+        option.value = index;
+        option.innerText = cls.fileName;
+        classList.appendChild(option);
+    });
+}
+
+function loadClass() {
+    let classIndex = document.getElementById("classList").value;
+    if (classIndex === "") return;
+
+    let cls = classes[classIndex];
+    let table = document.getElementById("loadedStudentTable").getElementsByTagName("tbody")[0];
+    table.innerHTML = "";
+
+    cls.students.forEach((student) => {
+        let newRow = table.insertRow();
+        newRow.innerHTML = `
+            <td>${student.name}</td>
+            <td>${student.rollNo}</td>
+            <td>${calculateAttendancePercentage(student.attendance)}%</td>
+            <td><button class="btn btn-info btn-sm" onclick="showProfile('${student.name}', '${student.rollNo}', ${JSON.stringify(student.attendance)})">View Profile</button></td>
+        `;
+    });
+
+    document.getElementById("loadedClassSection").classList.remove("hidden");
+}
+
+// Calculate Attendance Percentage
+function calculateAttendancePercentage(attendance) {
+    if (attendance.length === 0) return 0;
+    let presentDays = attendance.filter((day) => day === 1).length;
+    return ((presentDays / attendance.length) * 100).toFixed(2);
+}
+
+// Show Student Profile
+function showProfile(name, rollNo, attendance) {
+    let profileDetails = document.getElementById("profileDetails");
+    let percentage = calculateAttendancePercentage(attendance);
+
+    profileDetails.innerHTML = `
+        <h4>${name}</h4>
+        <p><strong>Roll No:</strong> ${rollNo}</p>
+        <p><strong>Attendance Percentage:</strong> ${percentage}%</p>
+    `;
+
+    renderPieChart(attendance);
+    document.getElementById("studentProfileSection").classList.remove("hidden");
+}
+
+// Render Pie Chart
+function renderPieChart(attendance) {
+    let presentDays = attendance.filter((day) => day === 1).length;
+    let absentDays = attendance.length - presentDays;
+
+    let ctx = document.getElementById("attendanceChart").getContext("2d");
+    new Chart(ctx, {
+        type: "pie",
+        data: {
+            labels: ["Present", "Absent"],
+            datasets: [
+                {
+                    data: [presentDays, absentDays],
+                    backgroundColor: ["#36A2EB", "#FF6384"],
+                },
+            ],
+        },
+    });
+}
+
+// Initialize Class List
+updateClassList();
+</script>
+ 
+
+</body>
+</html>

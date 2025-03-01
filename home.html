@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        Attendease
+    </title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+        .nav_bar,
+        nav ul {
+            display: flex;
+            position: sticky;
+            list-style: none;
+            height: 60px;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            padding: 40px;
+            font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: rgb(55, 81, 126);
+        }
+
+        .nav_bar h1 {
+            position: relative;
+            right: 1vw;
+            color: #ffffff;
+            font-size: 25px;
+            font-family: "Poppins", sans-serif;
+        }
+
+        nav ul li a {
+            position: relative;
+            padding: 18px 10px;
+            left: 120px;
+            font-size: 16px;
+            font-family: "Poppins", sans-serif;
+            font-weight: 500;
+            text-decoration: none;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .btn-signup {
+            position: relative;
+            left: 75px;
+
+            width: 104px;
+            height: 37px;
+            color: #ffffff;
+            font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: rgb(71, 178, 228);
+            font-size: 15px;
+            padding: 8px 25px 9px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 500;
+            transition-property: all;
+            transition-duration: 0.3s;
+            transition-timing-function: ease;
+            transition-delay: 0s;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            /* Light shadow effect */
+        }
+
+        .btn-login {
+            position: relative;
+            left: 110px;
+            width: 104px;
+            height: 37px;
+            color: #ffffff;
+            font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: rgb(71, 178, 228);
+            font-size: 15px;
+            padding: 8px 25px 9px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 500;
+            transition-property: all;
+            transition-duration: 0.3s;
+            transition-timing-function: ease;
+            transition-delay: 0s;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            /* Light shadow effect */
+        }
+
+        .btn-login:hover,
+        .btn-signup:hover {
+            background-color: #3a9fce;
+            cursor: pointer;
+            box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+        }
+
+        nav ul li a:hover {
+            color: #47b2e4;
+            transition-behavior: normal;
+            transition-delay: 0s;
+            transition-duration: 0.4s;
+            transition-property: all;
+            transition-timing-function: ease;
+        }
+
+
+        .nav-container {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            /* transition: all 0.5s; */
+            transition: background-color 0.5s ease-in-out;
+
+        }
+
+        .nav_bar,
+        nav ul {
+            background-color: transparent;
+            transition: all 0.5s;
+        }
+
+        .scrolled {
+            background-color: rgba(40, 58, 90, 0.9);
+            /* Light opacity background */
+        }
+
+
+
+        .hero_class {
+            position: relative;
+            background-color: rgb(55, 81, 126);
+            width: 100%;
+            height: 90vh;
+            display: flex;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero_class img {
+            animation-delay: 0s;
+            animation-direction: alternate-reverse;
+            animation-duration: 2s;
+            animation-fill-mode: both;
+            animation-iteration-count: infinite;
+            animation-name: up-down;
+            animation-play-state: running;
+            animation-range-end: normal;
+            animation-range-start: normal;
+            animation-timeline: auto;
+            animation-timing-function: ease-in-out;
+            position: relative;
+            height: 500px;
+            top: 100px;
+            left: 18vw;
+
+        }
+
+        .left-text {
+            position: relative;
+            top: 225px;
+            left: 150px;
+            line-height: 1.5;
+        }
+
+        .left-text h1 {
+            width: 600px;
+            height: 112px;
+            font-family: Jost, sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 56px;
+            color: rgb(255, 255, 255);
+            letter-spacing: normal;
+            word-spacing: 0px;
+            text-transform: none;
+            opacity: 1;
+        }
+
+        .left-text p {
+            position: relative;
+            top: 70px;
+            color: color(srgb 1 1 1 / 0.7);
+            font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 28.6px;
+            margin-block-end: 30px;
+            margin-block-start: 5px;
+            margin-bottom: 30px;
+            margin-top: 5px;
+            width: 546px;
+        }
+
+        .line-left {
+            width: 3px;
+            border-radius: 2px;
+            /* Line thickness */
+            height: 230px;
+            /* Adjust height as needed */
+            background-color: rgb(255, 255, 255);
+            /* Line color */
+            position: absolute;
+            /* Allows precise positioning */
+            left: 130px;
+            /* Adjust distance from text */
+            top: 350px;
+            /* Center it vertically */
+            transform: translateY(-50%);
+            /* Align perfectly */
+        }
+
+
+        .below-text .p {
+            margin-left: 650px;
+            margin-top: 5px;
+            font-size: 32px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #37517e;
+            font-family: "Jost", sans-serif;
+        }
+
+        .below-text .pa {
+            margin-left: 325px;
+            margin-top: 5px;
+            font-family: "Jost", sans-serif;
+            font-size: 18px;
+            /* color: #47b2e4; */
+            color: #555555;
+            font-weight: 500;
+        }
+
+        .below-text .pa2 {
+            margin-left: 440px;
+            /* margin-top:5px; */
+            position: relative;
+            bottom: 20px;
+            font-family: "Jost", sans-serif;
+            font-size: 18px;
+            /* color: #47b2e4; */
+            color: #555555;
+            font-weight: 500;
+        }
+
+        .three-box {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            padding: 50px;
+            position: relative;
+            bottom: 15px;
+        }
+
+        .boxes {
+            background-color: white;
+            border: 1px solid #ccc;
+            /* Greyish thin border */
+            color: #37517e;
+            /* Default text color */
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+            height: 280px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow */
+            line-height: 1.2
+        }
+
+        .boxes img {
+            width: 70px;
+            /* filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.2)); */
+            height: auto;
+
+            margin-bottom: 10px;
+            position: relative;
+            top: 20px;
+        }
+
+
+        .boxes h2 {
+            position: relative;
+            top: 30px;
+            margin-bottom: 10px;
+            font-family: "Jost", sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+
+        .boxes:hover {
+            transform: scale(1.05);
+            color: #47b2e4;
+
+            box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
+            border-color: #37517e;
+            cursor: pointer
+        }
+
+
+        .boxes:hover {
+            transform: scale(1.05);
+            color: #47b2e4;
+            box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+
+        }
+
+        .boxes p {
+            font-size: 16px;
+            font-family: "Jost", sans-serif;
+            color: rgb(68, 68, 68);
+            font-weight: 500;
+            position: relative;
+            top: 35px;
+            text-align: left;
+        }
+
+        .div-below-boxes {
+            text-align: center;
+            margin-top: 10px;
+            position: relative;
+            bottom: 20px;
+            padding: 30px;
+            /* background: #f9f9f9; */
+            background-color: white;
+            /* Light background to stand out */
+            border-radius: 5px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+            /* Soft shadow */
+            width: 40%;
+            margin-left: 445px;
+            /* margin-right: auto; */
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc;
+        }
+
+        .div-below-boxes p {
+            font-size: 22px;
+            font-weight: 600;
+            color: #37517e;
+            font-family: "Jost", sans-serif;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: #47b2e4;
+            position: relative;
+            right: 5px;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: "Jost", sans-serif;
+        }
+
+        .btn:hover {
+            background: #37517e;
+            transform: translateY(-3px);
+        }
+
+
+
+        .faq-section {
+            width: 100%;
+            background-color: #F5F6F8;
+            margin-top: 70px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 50px;
+            gap: 50px;
+        }
+
+        /* Left Side Image */
+        .faq-image {
+            width: 40%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .faq-image img {
+            position: relative;
+            top: 50px;
+            right: 10px;
+            width: 90%;
+            max-width: 450px;
+        }
+
+        /* Right Side: Text & FAQ */
+        .faq-content {
+            width: 55%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Text on Top */
+        .faq-text {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .faq-text b {
+            position: relative;
+            text-align: left;
+            bottom: 10px;
+            font-size: 26px;
+            color: #37517e;
+            font-family: "Jost", sans-serif;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .faq-text .p {
+            position: relative;
+            bottom: 10px;
+            font-size: 17px;
+            color: #555555;
+            text-align: left;
+            font-family: "Jost", sans-serif;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .faq-text .p2 {
+            position: relative;
+            bottom: 5px;
+            font-size: 17px;
+            color: #555555;
+            text-align: left;
+            font-family: "Jost", sans-serif;
+            line-height: 1.5;
+        }
+
+        /* FAQ Container */
+        .faq-container {
+            width: 100%;
+        }
+
+        .faq-item {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: 0.3s ease-in-out;
+        }
+
+
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            background: none;
+            border: none;
+            color: #37517e;
+            /* Same as your heading color */
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .faq-question .arrow {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-right: 2px solid #37517e;
+            border-bottom: 2px solid #37517e;
+            transform: rotate(45deg);
+            transition: transform 0.3s ease;
+        }
+
+        /* Rotate arrow when active (open state) */
+        .faq-question.active .arrow {
+            transform: rotate(225deg);
+        }
+
+        .faq-question:hover {
+            background-color: #E3E7ED;
+        }
+
+
+        .faq-answer {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            padding: 0 15px;
+            font-family: "Jost", sans-serif;
+            font-weight: 400;
+            font-size: 17px;
+            color: #555555;
+            border-top: 1px solid #ccc;
+            transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out;
+        }
+
+
+        .faq-item.active .faq-answer {
+            max-height: 150px;
+            opacity: 1;
+            padding: 15px;
+        }
+
+        footer {
+            background-color: #37517e;
+            color: white;
+            padding: 50px 0;
+            font-family: "Jost", sans-serif;
+            text-align: center;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: auto;
+            text-align: left;
+        }
+
+        /* Branding */
+        .footer-branding h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .footer-branding p {
+            font-size: 16px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        /* Quick Links & Contact */
+        .footer-links h3,
+        .footer-contact h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Quick Links */
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        .footer-links ul li {
+            margin: 10px 0;
+
+        }
+
+        .footer-links ul li a {
+            text-decoration: none;
+            color: color(srgb 1 1 1 / 0.7);
+            font-size: 16px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: inline-block;
+        }
+
+        .footer-links ul li a:hover {
+            color: #47b2e4;
+        }
+
+        /* Contact Section */
+        .footer-contact p {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .footer-contact a {
+            color: color(srgb 1 1 1 / 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-contact a:hover {
+            color: #47b2e4;
+        }
+
+        /* Social Icons */
+        .social-icons {
+            margin-top: 10px;
+        }
+
+        .social-icons a img {
+            width: 36px;
+            margin: 0 8px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .social-icons a img:hover {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        /* Divider */
+        .footer-divider {
+            width: 80%;
+            height: 1px;
+            background-color: #ccc;
+            margin: 25px auto;
+            opacity: 0.3;
+        }
+
+        /* Footer Bottom */
+        .footer-bottom {
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.7;
+        }
+
+        .footer-bottom p {
+            color: rgb(255, 255, 255);
+        }
+
+
+        .footer-links h3,
+        .footer-contact h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 8px; /* Adds spacing between text and line */
+        }
+
+        /* Bluish underline */
+        .footer-links h3::after,
+        .footer-contact h3::after {
+            content: "";
+            position: relative;
+            /* left:10px; */
+            display: block;
+            width: 50px; /* Adjust the width of the line */
+            height: 3px; /* Thickness of the line */
+            background-color: #47b2e4; /* Bluish color */
+            margin-top: 5px;
+        }
+
+        #profile-icon {
+    border-radius: 50%;
+    border: 2px solid #fff;
+    transition: transform 0.3s ease;
+}
+
+#profile-icon:hover {
+    transform: scale(1.1);
+}
+
+
+
+
+
+
+        @keyframes up-down {
+            0% {
+                transform: translateY(0px);
+            }
+
+            100% {
+                transform: translateY(-20px);
+                /* Moves image up */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+            <nav class="nav_bar">
+                <h1>Attendease</h1>
+                <img src="" alt="">
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="Attendance_manually.html">Manual Attendance</a></li>
+                    <li><a href="AI_attendance.html">AI Attendance</a></li>
+                    <li><a href="savedattendance.html">Saved Records</a></li>
+                    <li><a href="aboutus.html">About Us</a></li>
+                </ul>
+                <button class="btn-login" onclick="window.location.href='login.html'">Login</button> <br>
+                <button class="btn-signup" onclick="window.location.href='signup.html'">Sign Up</button>
+
+               
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section id="home" class="hero_class">
+            <div class="line-left">
+
+            </div>
+            <div class="left-text">
+
+                <h1>Attendease: Smart, <br>Simple & Seamless <br> Attendance!</h1>
+                <p>Attendease is your smart AI-powered attendance tracker!</p>
+            </div>
+            <img src="/images/hero-img.png" alt="">
+        </section>
+
+        <div class="below-text">
+            <img src="" alt="">
+            <p class="p">Attendease</p>
+            <p class="pa">Attendease offers both manual and AI-powered attendance tracking, ensuring flexibility and
+                accuracy.</p>
+            <br>
+            <p class="pa2">Easily mark attendance, track it with AI, and access saved records anytime. </p>
+        </div>
+
+        <section class="three-box">
+            <div class="boxes"  onclick="window.location.href='Attendance_manually.html'">
+                <img src="/images/icons8-immigration-64.png" alt="">
+                <h2>Mark Attendance Manually</h2>
+                <p>Seamlessly and effortlessly record attendance with just one simple click, making the process faster
+                    and more efficient than ever!</p>
+            </div>
+            <div class="boxes"  onclick="window.location.href='AI_attendance.html'">
+                <img src="/images/icons8-artificial-intelligence-64.png" alt="">
+                <h2>AI-Powered Smart Tracking</h2>
+                <p>Smartly automate attendance using advanced AI, ensuring accuracy and efficiency with minimal effort!
+                </p>
+            </div>
+            <div class="boxes"  onclick="window.location.href='savedattendance.html'">
+                <img src="/images/icons8-save-50.png" alt="">
+                <h2>Access Saved Records</h2>
+                <p>Easily access, review, and manage all your past attendance records whenever you need, without any
+                    hassle!</p>
+            </div>
+
+        </section>
+        <div class="div-below-boxes">
+
+            <p>Effortless Attendance, One Click Away!</p>
+            <button class="btn" onclick="window.location.href='signup.html'">Get Started Now by Registering!</button>
+
+        </div>
+
+        <section class="faq-section">
+            <!-- Left Side: Image -->
+            <div class="faq-image">
+                <img src="/images/faq-left.png" alt="FAQ Image">
+            </div>
+
+            <!-- Right Side: Text + FAQs -->
+            <div class="faq-content">
+                <div class="faq-text">
+                    <b>"Everything You Need to Know About Attendease!"</b>
+                    <p class="p">With Attendease, managing attendance is seamless and hassle-free. Whether it's manual
+                        entry or
+                        AI-powered tracking, stay in control with ease!</p>
+                    <p class="p2">We’ve answered the most common questions for you! If you're wondering how AI tracking
+                        works, how
+                        to access saved records, or how to ensure data security, check out the FAQs below.</p>
+                </div>
+
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <button class="faq-question">How does AI-powered attendance tracking work? <span
+                                class="arrow"></span></button>
+                        <p class="faq-answer">AI detects patterns and automates attendance marking for accuracy and
+                            efficiency.</p>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Can I manually mark attendance? <span
+                                class="arrow"></span></button>
+                        <p class="faq-answer">Yes! You can manually add and save attendance anytime with a simple click.
+                        </p>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Where is my attendance data stored? <span
+                                class="arrow"></span></button>
+                        <p class="faq-answer">Your data is securely stored and accessible anytime for easy management.
+                        </p>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Is my data secure? <span class="arrow"></span></button>
+                        <p class="faq-answer">Yes, all data is encrypted and securely stored for privacy protection.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-container">
+
+            <div class="footer-branding">
+                <img src="your-logo.png" alt="Attendease Logo">
+                <h2>Attendease</h2>
+                <p>Smart & Seamless Attendance Tracking<br>With Attendease, managing attendance is <br>seamless and
+                    hassle-free. Whether it's <br> manual entry or AI-powered tracking, <br> stay in control with ease!
+                </p>
+            </div>
+
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="Attendance_manually.html">Manual Attendance</a></li>
+                    <li><a href="AI_attendance.html">AI Attendance</a></li>
+                    <li><a href="savedattendance.html">Saved Records</a></li>
+                    <li><a href="aboutus.html">About Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h3>Contact Us</h3>
+                <p>Email: <a href="mailto:kushwahavarun86@gmail.com">kushwahavarun86@gmail.com</a></p>
+                <p>Phone: <a href="tel:+918141353906">+91 8141353906</a></p>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/bbc__varun__/"><img src="/images/icons8-insta-50.png" alt="Instagram"></a>
+                    <a href=""><img src="/images/icons8-x-48.png" alt="Twitter"></a>
+                    <a href="https://www.linkedin.com/in/varun-kushwaha-52a0a8351"><img src="/images/icons8-linkedin-48.png" alt="LinkedIn"></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Attendease. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+
+  
+
+        window.addEventListener("scroll", function () {
+            let navbar = document.querySelector(".nav_bar");
+            if (window.scrollY > 100) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+        });
+
+
+        document.querySelectorAll(".faq-question").forEach(button => {
+            button.addEventListener("click", () => {
+                const faqItem = button.parentElement;
+                faqItem.classList.toggle("active");
+            });
+        });
+
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', function () {
+                this.classList.toggle('active');
+            });
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener("click", function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute("href"));
+        if (target) {
+            window.scrollTo({
+                top: target.offsetTop - 50, // Adjust if needed
+                behavior: "smooth",
+            });
+        }
+    });
+});
+
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>

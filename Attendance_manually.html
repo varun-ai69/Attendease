@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Attendance</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Font (Jost) -->
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- Include SheetJS Library -->
+<script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+
+    <!-- Custom Styles -->
+    <style>
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgb(33, 37, 41);
+            padding-top: 20px;
+        }
+
+        .sidebar .nav-link {
+            color: #ffffff;
+            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: #007bff;
+            color: #fff;
+        }
+
+        .sidebar .nav-item {
+            margin-bottom: 7px;
+        }
+
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .flex-column li {
+            margin-top: 5px;
+        }
+
+        .nested {
+            display: none;
+        }
+
+        .nested.active {
+            display: block;
+        }
+
+        /* Navbar Styling */
+        .section-navbar {
+            position: fixed;
+            top: 0;
+            left: 250px;
+            right: 0;
+            background: linear-gradient(135deg, #007bff, #00bcd4);
+            padding: 10px 20px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-navbar h2 {
+            color: #fff;
+            font-family: 'Jost', sans-serif;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-navbar img {
+            width: 30px;
+            /* Increased image size */
+            height: 30px;
+            /* Increased image size */
+        }
+
+
+        /* Cool Heading Section */
+        /* Cool Heading Section */
+        .cool-heading {
+            background: linear-gradient(135deg, #007bff, #00bcd4);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .cool-heading h2 {
+            font-family: 'Jost', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .cool-heading .subheading {
+            font-family: 'Jost', sans-serif;
+            font-size: 18px;
+            color: #e0e0e0;
+        }
+
+        /* Catchy Text Above Boxes */
+        .catchy-text {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .catchy-text h3 {
+            font-family: 'Jost', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .catchy-text .instruction-subtext {
+            font-family: 'Jost', sans-serif;
+            font-size: 18px;
+            color: #555;
+        }
+
+        /* Step-by-Step Container */
+        .step-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        /* Step Box */
+        .step-box {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 25px;
+            width: 50%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .step-box.left {
+            align-self: flex-start;
+            margin-left: 5%;
+        }
+
+        .step-box.right {
+            align-self: flex-end;
+            margin-right: 5%;
+        }
+
+        .step-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .step-number {
+            background: #007bff;
+            color: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0 auto 15px auto;
+        }
+
+        .step-content h5 {
+            font-family: 'Jost', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .step-content p {
+            font-family: 'Jost', sans-serif;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .step-content ul {
+            text-align: left;
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .step-content ul li {
+            font-family: 'Jost', sans-serif;
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        /* Wavy Arrows */
+        .curly-arrow {
+            width: 120px;
+            height: 80px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/6/6f/Curved_Arrow_Right.svg') no-repeat center;
+            background-size: contain;
+            position: absolute;
+            z-index: 1;
+        }
+
+        /* Arrow for Left Boxes (Pointing Right and Down) */
+        .step-box.left .curly-arrow {
+            right: -140px;
+            /* Extends right from left box */
+            top: 50%;
+            transform: translateY(-50%) rotate(20deg);
+        }
+
+        /* Arrow for Right Boxes (Pointing Left and Down) */
+        .step-box.right .curly-arrow {
+            left: -140px;
+            /* Extends left from right box */
+            top: 50%;
+            transform: translateY(-50%) rotate(-20deg);
+        }
+
+        /* Video Section */
+        .video-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .video-section h3 {
+            font-family: 'Jost', sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .video-section .video-subtext {
+            font-family: 'Jost', sans-serif;
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .video-placeholder {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.action-buttons .btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.action-buttons .btn:hover {
+    transform: translateY(-2px);
+}
+
+.action-buttons .btn-primary {
+    background: #007bff;
+    border: none;
+}
+
+.action-buttons .btn-primary:hover {
+    background: #0056b3;
+}
+
+.action-buttons .btn-secondary {
+    background: #6c757d;
+    border: none;
+}
+
+.action-buttons .btn-secondary:hover {
+    background: #5a6268;
+}
+
+
+/* File Upload Container */
+.file-upload-container {
+    text-align: center;
+    border: 2px dashed #007bff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 10px;
+    background: #f8f9fa;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.file-upload-container:hover {
+    background: #e9f5ff;
+    border-color: #0056b3;
+}
+
+/* File Upload Label */
+.file-upload-label {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #007bff;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.file-upload-label i {
+    font-size: 24px;
+}
+
+.file-upload-text {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Hide Default File Input */
+.file-upload-container input[type="file"] {
+    display: none;
+}
+
+
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column p-3">
+        <h1 class="text-center text-white">Attendease</h1>
+        <hr class="text-white">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="home.html" class="nav-link">
+                    <i class="bi bi-house-door"></i> Home
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link active d-flex align-items-center manual" onclick="toggleNested('manualAttendance')" >
+                    <i class="bi bi-clipboard-check me-2"></i> 
+                    Manual Attendance 
+                    <i class="bi bi-chevron-down ms-2"></i>
+                </a>
+                <ul class="nav flex-column ms-3 nested" id="manualAttendance">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('loadClass')">📂 Load Class</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('addClass')">
+                            <img src="/images/ui-element_15768319.png" alt="Add Class"
+                                style="width: 20px; height: 20px;"> Add Class
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="" class="nav-link">
+                    <i class="bi bi-robot"></i> AI Attendance
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="savedattendance.html" class="nav-link">
+                    <i class="bi bi-folder"></i> Saved Records
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="aboutus.html" class="nav-link">
+                    <i class="bi bi-info-circle"></i> About Us
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Navbar for Sections -->
+    <div class="section-navbar hidden" id="manualAttendanceNavbar">
+        <h2><img src="/images/ui-element_15768319.png" alt="Manual Attendance"> Manual Attendance <i class="bi bi-arrow-down"></i></h2>
+    </div>
+    <div class="section-navbar hidden" id="loadClassNavbar">
+        <h2><img src="/images/ui-element_15768319.png" alt="Load Class"> Load Class</h2>
+    </div>
+    <div class="section-navbar hidden" id="addClassNavbar">
+        <h2><img src="/images/plus_10023858.png" alt="Add Class"> Add Class</h2>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+        <!-- Default content for Manual Attendance page -->
+        <div id="defaultContent">
+            <!-- Cool Heading Section -->
+            <div class="cool-heading">
+                <h2>Welcome to Manual Attendance</h2>
+                <p class="subheading">Please select an option from the sidebar to get started.</p>
+            </div>
+
+            <!-- Instructions Section -->
+            <div class="instructions mt-4">
+                <!-- Catchy Text Above Boxes -->
+                <div class="catchy-text">
+                    <h3>How to Store Manual Attendance</h3>
+                    <p class="instruction-subtext">Follow these simple steps to store manual attendance:</p>
+                </div>
+
+                <!-- Step-by-Step Boxes in Zigzag Pattern -->
+                <div class="step-container">
+                    <!-- Step 1 -->
+                    <div class="step-box left">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h5>Add a Class</h5>
+                            <p>
+                                Go to the <strong>Add Class</strong> section and enter the following details:
+                            </p>
+                            <ul>
+                                <li><strong>File Name:</strong> Enter a unique name for your class (e.g., "Class 10A").
+                                </li>
+                                <li><strong>Student Name:</strong> Add the name of a student.</li>
+                                <li><strong>Roll No:</strong> Add the roll number of the student.</li>
+                            </ul>
+                            <p>Click the <strong>Add Student</strong> button to add the student to the list.</p>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Step 2 -->
+                    <div class="step-box right">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h5>Save the Class</h5>
+                            <p>
+                                After adding all the students, click the <strong>Save Class</strong> button to save the
+                                class.
+                            </p>
+                            <p>This will store the class data, and you can load it later in the <strong>Load
+                                    Class</strong> section.</p>
+                        </div>
+                    </div>
+
+                    <!-- Curly Arrow -->
+
+
+                    <!-- Step 3 -->
+                    <div class="step-box left">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h5>Load the Class</h5>
+                            <p>
+                                Go to the <strong>Load Class</strong> section and select the class you want to manage.
+                            </p>
+                            <p>Once the class is loaded, you can mark students as <strong>Present</strong> or
+                                <strong>Absent</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Step 4 -->
+                    <div class="step-box right">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h5>Mark Attendance</h5>
+                            <p>
+                                For each student, click the <strong>Present</strong> or <strong>Absent</strong> button
+                                to mark their attendance.
+                            </p>
+                            <p>The row will change color to indicate their status:</p>
+                            <ul>
+                                <li><span style="color: #28a745;">Green</span> for Present</li>
+                                <li><span style="color: #dc3545;">Red</span> for Absent</li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Step 5 -->
+                    <div class="step-box left">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h5>Save Attendance</h5>
+                            <p>
+                                Once you've marked attendance for all students, you can save the updated records for
+                                future reference.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solution Video Section -->
+                <div class="video-section mt-5">
+                    <h3>Watch How It Works</h3>
+                    <p class="video-subtext">Here's a quick video tutorial to guide you through the process:</p>
+                    <div class="video-placeholder">
+                        <!-- Replace this with your video embed code -->
+                        <video controls style="width: 100%; max-width: 600px; border-radius: 10px;">
+                            <source src="your-video-file.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Class Section -->
+        <div id="addClass" class="hidden">
+            <h2><img src="/images/plus_10023858.png" alt="Add Class" style="width: 30px; height: 30px;"> Add
+                Class</h2>
+            <input type="text" id="fileName" class="form-control mb-3" placeholder="Enter File Name">
+            <div class="mb-3">
+                <label for="studentName" class="form-label">Student Name</label>
+                <input type="text" class="form-control" id="studentName">
+            </div>
+            <div class="mb-3">
+                <label for="rollNo" class="form-label">Roll No</label>
+                <input type="text" class="form-control" id="rollNo">
+            </div>
+            <button class="btn btn-primary" onclick="addStudent()">Add Student</button>
+            <div class="file-upload-container mb-4">
+                <label for="fileUpload" class="file-upload-label">
+                    <i class="bi bi-upload"></i> Upload Excel File
+                    <span class="file-upload-text">(Supports .xlsx and .csv)</span>
+                </label>
+                <input type="file" id="fileUpload" class="form-control" accept=".xlsx, .csv">
+            </div>
+
+            <h3 class="mt-4">📑 Student List</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Roll No</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTable">
+                    <!-- Student Data -->
+                </tbody>
+            </table>
+            <button class="btn btn-success mt-3" onclick="saveClass()">Save Class</button>
+        </div>
+
+        <!-- Load Class Section -->
+        <!-- Load Class Section -->
+        <div id="loadClass" class="hidden">
+            <h2>📂 Load Class</h2>
+            <select id="classList" class="form-control mb-3" onchange="loadClass()">
+                <option value="">Select a class</option>
+            </select>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Roll No</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="loadedStudentTable">
+                    <!-- Loaded Student Data -->
+                </tbody>
+            </table>
+
+            <!-- Save File and View Saved Attendance Buttons -->
+            <div class="action-buttons mt-4">
+                <button class="btn btn-primary" onclick="saveFile()">Save File</button>
+                <button onclick="renameLoadedClass()" class="btn btn-info">Rename Class</button>
+            </div>
+           
+         
+        </div>
+    </div>
+
+    <script>
+        let classes = [];
+    
+        function showSection(section) {
+            document.querySelectorAll('.content > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(section).classList.remove('hidden');
+        }
+    
+        function toggleNested(id) {
+            document.getElementById(id).classList.toggle('active');
+        }
+    
+        function addStudent() {
+            let name = document.getElementById("studentName").value;
+            let rollNo = document.getElementById("rollNo").value;
+            if (name && rollNo) {
+                let table = document.getElementById("studentTable");
+                let newRow = table.insertRow();
+                newRow.innerHTML = `<td>${name}</td><td>${rollNo}</td>
+                            <td>
+                                <button class='btn btn-warning btn-sm' onclick='editStudent(this)'>Edit</button>
+                                <button class='btn btn-danger btn-sm' onclick='deleteStudent(this)'>Delete</button>
+                            </td>`;
+                document.getElementById("studentName").value = "";
+                document.getElementById("rollNo").value = "";
+            }
+        }
+    
+        function editStudent(button) {
+            let row = button.closest("tr");
+            let name = row.cells[0].innerText;
+            let rollNo = row.cells[1].innerText;
+            document.getElementById("studentName").value = name;
+            document.getElementById("rollNo").value = rollNo;
+            row.remove();
+        }
+    
+        function deleteStudent(button) {
+            let row = button.closest("tr");
+            row.remove();
+        }
+    
+        function saveClass() {
+            let fileName = document.getElementById("fileName").value;
+            if (!fileName) {
+                alert("Please enter a file name.");
+                return;
+            }
+    
+            let students = [];
+            let rows = document.querySelectorAll("#studentTable tr");
+            rows.forEach(row => {
+                let name = row.cells[0].innerText;
+                let rollNo = row.cells[1].innerText;
+                students.push({ name, rollNo });
+            });
+    
+            classes.push({ fileName, students });
+            updateClassList();
+    
+            document.getElementById("fileName").value = "";
+            document.getElementById("studentName").value = "";
+            document.getElementById("rollNo").value = "";
+            document.getElementById("studentTable").innerHTML = "";
+    
+            alert("Class saved successfully!");
+        }
+    
+        function updateClassList() {
+            let classList = document.getElementById("classList");
+            classList.innerHTML = '<option value="">Select a class</option>';
+            classes.forEach((cls, index) => {
+                let option = document.createElement("option");
+                option.value = index;
+                option.innerText = cls.fileName;
+                classList.appendChild(option);
+            });
+        }
+    
+        function loadClass() {
+            let classIndex = document.getElementById("classList").value;
+            if (classIndex === "") return;
+    
+            let cls = classes[classIndex];
+            let table = document.getElementById("loadedStudentTable");
+            table.innerHTML = "";
+    
+            cls.students.forEach(student => {
+                let newRow = document.createElement("tr");
+                newRow.innerHTML = `
+            <td>${student.name}</td>
+            <td>${student.rollNo}</td>
+            <td>
+                <button class='btn btn-success btn-sm present-btn'>Present</button>
+                <button class='btn btn-danger btn-sm absent-btn'>Absent</button>
+            </td>`;
+                table.appendChild(newRow);
+            });
+        }
+    
+        document.getElementById("loadedStudentTable").addEventListener("click", function (event) {
+            if (event.target.classList.contains("present-btn")) {
+                markPresent(event.target);
+            } else if (event.target.classList.contains("absent-btn")) {
+                markAbsent(event.target);
+            } else if (event.target.classList.contains("edit-btn")) {
+                resetAttendance(event.target);
+            }
+        });
+    
+        function markPresent(button) {
+            let row = button.closest("tr");
+            row.style.backgroundColor = "#d4edda"; // Light green
+            row.cells[2].innerHTML = `<span class='text-success'>Present</span>
+                               <button class='btn btn-warning btn-sm edit-btn' style='margin-left: 10px;'>Edit</button>`;
+        }
+    
+        function markAbsent(button) {
+            let row = button.closest("tr");
+            row.style.backgroundColor = "#f8d7da"; // Light red
+            row.cells[2].innerHTML = `<span class='text-danger'>Absent</span>
+                               <button class='btn btn-warning btn-sm edit-btn' style='margin-left: 10px;'>Edit</button>`;
+        }
+    
+        function resetAttendance(button) {
+            let row = button.closest("tr");
+            row.style.backgroundColor = ""; // Reset to default
+            row.cells[2].innerHTML = `<button class='btn btn-success btn-sm present-btn'>Present</button>
+                               <button class='btn btn-danger btn-sm absent-btn'>Absent</button>`;
+        }
+    
+        // Save File Function with Date & Time
+        function saveFile() {
+            let classIndex = document.getElementById("classList").value;
+            if (classIndex === "") {
+                alert("Please load a class first.");
+                return;
+            }
+    
+            let cls = classes[classIndex];
+            let attendanceData = [];
+            let now = new Date();
+            let dateTime = now.toLocaleString(); // Get current date and time
+    
+            let rows = document.querySelectorAll("#loadedStudentTable tr");
+            rows.forEach((row) => {
+                let name = row.cells[0].innerText;
+                let rollNo = row.cells[1].innerText;
+                let status = row.cells[2].innerText.includes("Present") ? "Present" : "Absent";
+                attendanceData.push({ name, rollNo, status });
+            });
+    
+            let savedRecords = JSON.parse(localStorage.getItem("savedRecords")) || [];
+            savedRecords.push({ fileName: cls.fileName, dateTime, attendanceData });
+            localStorage.setItem("savedRecords", JSON.stringify(savedRecords));
+    
+            alert("Attendance file saved successfully!");
+        }
+    
+        // Rename Saved Attendance File
+        function renameSavedFile() {
+            let savedRecords = JSON.parse(localStorage.getItem("savedRecords")) || [];
+            if (savedRecords.length === 0) {
+                alert("No saved attendance files found.");
+                return;
+            }
+    
+            let fileNames = savedRecords.map((record, index) => `${index + 1}. ${record.fileName} (${record.dateTime})`).join("\n");
+            let fileIndex = prompt(`Select a file to rename by number:\n${fileNames}`);
+    
+            if (fileIndex && fileIndex > 0 && fileIndex <= savedRecords.length) {
+                let newFileName = prompt("Enter the new file name:");
+                if (newFileName) {
+                    savedRecords[fileIndex - 1].fileName = newFileName;
+                    localStorage.setItem("savedRecords", JSON.stringify(savedRecords));
+                    alert("File renamed successfully!");
+                }
+            } else {
+                alert("Invalid selection.");
+            }
+        }
+        function renameLoadedClass() {
+    let classIndex = document.getElementById("classList").value;
+    if (classIndex === "") {
+        alert("Please select a class to rename.");
+        return;
+    }
+
+    let savedRecords = JSON.parse(localStorage.getItem("savedRecords")) || [];
+    let className = classes[classIndex].fileName; // Get original name
+
+    // Check if this class exists in saved records, if not, add it
+    let recordIndex = savedRecords.findIndex(record => record.fileName === className);
+    if (recordIndex === -1) {
+        alert("This class is not saved yet. Please save attendance first.");
+        return;
+    }
+
+    let newFileName = prompt("Enter the new class name:");
+    if (newFileName) {
+        savedRecords[recordIndex].fileName = newFileName; // Update first time correctly
+        localStorage.setItem("savedRecords", JSON.stringify(savedRecords)); // Save changes
+        updateClassList(); // Refresh dropdown
+
+        // Keep the renamed class selected
+        document.getElementById("classList").value = classIndex;
+
+        alert("Class renamed successfully in saved records!");
+    }
+}
+
+
+// Handle File Upload
+document.getElementById("fileUpload").addEventListener("change", function (event) {
+    let file = event.target.files[0];
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            let data = new Uint8Array(e.target.result);
+            let workbook = XLSX.read(data, { type: "array" });
+
+            // Get the first sheet
+            let sheetName = workbook.SheetNames[0];
+            let sheet = workbook.Sheets[sheetName];
+
+            // Convert sheet data to JSON
+            let jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+            // Clear existing table data
+            document.getElementById("studentTable").innerHTML = "";
+
+            // Populate the table with Excel data
+            jsonData.forEach((row, index) => {
+                if (index > 0) { // Skip header row
+                    let name = row[0]; // First column: Name
+                    let rollNo = row[1]; // Second column: Roll No
+                    addStudentFromExcel(name, rollNo);
+                }
+            });
+        };
+        reader.readAsArrayBuffer(file);
+    }
+});
+
+// Add Student from Excel Data
+function addStudentFromExcel(name, rollNo) {
+    if (name && rollNo) {
+        let table = document.getElementById("studentTable");
+        let newRow = table.insertRow();
+        newRow.innerHTML = `<td>${name}</td><td>${rollNo}</td>
+                            <td>
+                                <button class='btn btn-warning btn-sm' onclick='editStudent(this)'>Edit</button>
+                                <button class='btn btn-danger btn-sm' onclick='deleteStudent(this)'>Delete</button>
+                            </td>`;
+    }
+}
+
+
+    </script>
+    
+</body>
+
+</html>
